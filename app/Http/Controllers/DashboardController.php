@@ -10,10 +10,17 @@ class DashboardController extends Controller
 
     public function index()
     {
+        $ideas = Idea::orderBy('created_at', 'DESC');
+
+        //check if their is a search
+        //if there is check search value with our database
+        if (request()->has('search')) {
+            $ideas = $ideas->where('content', 'like', '%' . request()->get('search', '') . '%');
+        }
 
         // dump(Idea::all());
         return view('dashboard', [
-            'ideas' => Idea::orderBy('created_at', 'DESC')->paginate(5)
+            'ideas' => $ideas->paginate(5)
         ]);
     }
 }
